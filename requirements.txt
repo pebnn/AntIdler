@@ -1,0 +1,6 @@
+psutil~=5.9.6
+pywinauto~=0.6.8
+PyYAML~=6.0
+pwinput~=1.0.2
+cryptocode~=0.1
+moviepy~=1.0.3
