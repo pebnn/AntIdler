@@ -3,7 +3,7 @@ import time
 
 # File for detecting login alerts or general alerts such as HC expire or BC expire and others.
 
-# Todo: Run image though checks for each alert type and return click coords for relevant alert type
+# Todo: Run image through checks for each alert type and return click coords for relevant alert type
 def detectAlert(win):
     time.sleep(0.5)
     screen = win.capture_as_image() # capture screen as PIL.Image.Image class
