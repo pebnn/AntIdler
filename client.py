@@ -45,26 +45,57 @@ def Habbo_client(ticket="habboticket", path="Habbo Launcher path"):
     while True:
         if habbo_client_running == True:
             break
-        # Open Habbo Launcher using pywinauto
-        app = Application(backend="uia").start(path)
+        from pywinauto import Application
+        from pywinauto.keyboard import send_keys
+        import time
 
-        # Wait for potential updates to finish, increase number if habbo ticket is not being entered
+        # Start the launcher
+        app = Application(backend="uia").start(path)
         time.sleep(4)
 
-        # Press TAB to select habbo token input box in launcher
-        send_keys("{TAB}")
+        # Get the top-level window
+        window = app.top_window()
+        #window.draw_outline(colour='red', thickness=5)  # Debug
+        #window.print_control_identifiers()  # Debug
+        time.sleep(2)
 
-        # Copy ticket to clipboard
-        subprocess.run("clip", text=True, input=ticket)
+        try:
+            login_edit = window.child_window(
+                auto_id="code",
+                control_type="Edit",
+                # or title="Can't login? Paste the login code from the Habbo website here:",
+            )
+        except:
+            print("Could not find the login-code Edit control!")
+            return
 
-        # Paste clipboard to login
-        send_keys('^v')
+        login_edit.set_focus()
+        time.sleep(0.2)
 
-        time.sleep(1)
-        # Press TAB twice to select Flash version, Then press enter to run Flash client.
-        send_keys("{TAB}")
-        send_keys("{TAB}")
-        send_keys("{ENTER}")
+        # Enter login code, then press Enter
+        login_edit.type_keys(ticket, with_spaces=True)
+        time.sleep(0.2)
+        login_edit.type_keys("{ENTER}")
+
+        time.sleep(3)
+
+        # Click "PLAY HABBO"
+        window.set_focus()
+        time.sleep(0.3)
+        window.type_keys("{TAB}")
+        time.sleep(0.3)
+        window.type_keys("{TAB}")
+        time.sleep(0.3)
+        window.type_keys("{ENTER}")
+
+        i = 0
+        while True:
+            i += 1
+            time.sleep(0.2)
+            send_keys("{TAB}")
+            if i == 11:
+                break
+
 
         # Wait for Habbo.exe to start
         count = 0
@@ -99,7 +130,8 @@ def Habbo_client(ticket="habboticket", path="Habbo Launcher path"):
     from Alerts import detectAlert
     detectAlert(win=app[window_title])
 
-    # How many seconds should each idle session be set as (21600 = 6 hours)
+    # How many seconds should each idle session be set as (21600 = 6 hours)hhus.87605b08-7aff-4b4e-bcde-122ec72bf97a-61561216.V4
+
     idle_time = 21600
 
     # Function for sleeping until relog, also handles screenshots through the idle period
